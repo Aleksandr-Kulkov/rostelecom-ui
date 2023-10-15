@@ -4,7 +4,7 @@ auth_page_url = 'https://b2c.passport.rt.ru/auth/realms/b2c/protocol/openid-conn
                 'login&response_type=code&scope=openid&state=6c6800ba-2e66-450a-a019-17c3879780bd&theme&auth_type'
 
 # Path
-driver_path = 'C:/Users/Lena/PycharmProjects/graduatework/chromedriver-win64/chromedriver.exe'
+driver_path = '<path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe'
 
 # Test Data
 empty = ''
