@@ -7,7 +7,15 @@ Skillfactory - Graduatework
 
 Тестовая документация: https://docs.google.com/spreadsheets/d/1f1FC1MGe85-yy2FcyRfxySQLAQusoQWKjrSiOZKTCFk/edit?usp=sharing
 
+Тестовое окружение:
+1. OS - Windows 10 Pro 22H2
+2. Browser - Chrome 117.0.5938.152 (скачан соответствующий chromedriver).
+3. IDE - PyCharm
+4. Python 3.11
+
 Тестовые сценарии проверяют функциональность элементов страниц авторизации, регистрации и восстановления пароля.
+
+Перед запуском тестов необходимо в файле settings.py в переменной driver_path вместо <path_to_driver> указать путь до проекта.
 
 Для запуска тестов необходимо выполнить следующие команды в терминале PyCharm (вместо <path_to_driver> необходимо указать путь до проекта):
 1. Страница авторизации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_auth_page.py
