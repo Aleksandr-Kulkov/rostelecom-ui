@@ -5,8 +5,11 @@ Skillfactory - Graduatework
 Тестовые сценарии проверяют функциональность элементов страниц авторизации, регистрации и восстановления пароля.
 
 Для запуска тестов необходимо выполнить следующие команды в терминале PyCharm (вместо <path_to_driver> необходимо указать путь до проекта):
+
 python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_auth_page.py
+
 python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_reg_page.py
+
 python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_pass_rec_page.py
 
 При тестировании применены следующие библиотеки:
