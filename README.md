@@ -1,5 +1,4 @@
 # rostelecom-ui
-Skillfactory - Graduatework
 
 Тестирование сайта компании «Ростелеком Информационные Технологии».
 
