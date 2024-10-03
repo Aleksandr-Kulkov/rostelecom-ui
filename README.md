@@ -14,12 +14,14 @@
 
 Тестовые сценарии проверяют функциональность элементов страниц авторизации, регистрации и восстановления пароля.
 
-Перед запуском тестов необходимо в файле graduatework/settings.py в переменной driver_path вместо <path_to_driver> указать путь до проекта.
+Перед запуском тестов необходимо:
+- скачать архив с файлом chromedriver в соответствии с версией браузера Chrome по ссылке https://developer.chrome.com/docs/chromedriver/downloads?hl=ru, разархивировать архив, переместить папку с файлом chromedriver в папку проекта;
+- в файле settings.py в переменной driver_path вместо <path_to_driver> указать путь до проекта.
 
-Для запуска тестов необходимо выполнить следующие команды в терминале PyCharm (вместо <path_to_driver> необходимо указать путь до проекта):
-1. Страница авторизации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_auth_page.py
-2. Страница регистрации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_reg_page.py
-3. Страница восстановления пароля: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_pass_rec_page.py
+Команды для запуска тестов в терминале PyCharm (вместо <path_to_driver> необходимо указать путь до проекта):
+1. Страница авторизации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/chromedriver-win64/chromedriver.exe rostelecom-ui/tests/test_auth_page.py
+2. Страница регистрации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/chromedriver-win64/chromedriver.exe rostelecom-ui/tests/test_reg_page.py
+3. Страница восстановления пароля: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/chromedriver-win64/chromedriver.exe rostelecom-ui/tests/test_pass_rec_page.py
 
 При тестировании применены следующие библиотеки:
 - pytest - версия 6.2.5
