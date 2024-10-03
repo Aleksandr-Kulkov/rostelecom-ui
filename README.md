@@ -19,9 +19,9 @@
 - в файле settings.py в переменной driver_path вместо <path_to_driver> указать путь до проекта.
 
 Команды для запуска тестов в терминале PyCharm (вместо <path_to_driver> необходимо указать путь до проекта):
-1. Страница авторизации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/chromedriver-win64/chromedriver.exe graduatework/tests/test_auth_page.py
-2. Страница регистрации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/chromedriver-win64/chromedriver.exe graduatework/tests/test_reg_page.py
-3. Страница восстановления пароля: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/chromedriver-win64/chromedriver.exe graduatework/tests/test_pass_rec_page.py
+1. Страница авторизации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_auth_page.py
+2. Страница регистрации: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_reg_page.py
+3. Страница восстановления пароля: python -m pytest -v --driver Chrome --driver-path <path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe graduatework/tests/test_pass_rec_page.py
 
 При тестировании применены следующие библиотеки:
 - pytest - версия 6.2.5
