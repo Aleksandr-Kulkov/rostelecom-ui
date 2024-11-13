@@ -1,224 +1,198 @@
+# python -m pytest -v --driver Chrome --driver-path C:/Users/akulkov/PycharmProjects/rostelecom-website/chromedriver-win64/chromedriver.exe tests/test_reg_page.py
 import pytest
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium import webdriver
-from graduatework.settings import auth_page_url, driver_path, empty, msg_reg_first_name, msg_reg_last_name,\
-    msg_username, msg_pass, msg_pass_confirm, cyrillic_2, email, password, cyrillic_1, cyrillic_31, space,\
-    spaces_group, spaces_in_cyrillic, latin, numbers, symbols, password_2, msg_pass_mismatch
+from settings import *
+from pages.auth_page import AuthPage
+from pages.reg_page import RegPage
 
 
 @pytest.fixture(autouse=True)
-def testing_reg():
-    """Фикстура заходит в браузер, открывает страницу авторизации, переходит на страницу регистрации,
-    ожидает загрузку страницы. После выполнения теста выходит из браузера."""
-    pytest.driver = webdriver.Chrome(driver_path)
-    # Переход на страницу авторизации.
-    pytest.driver.get(auth_page_url)
-    # Явное ожидание видимого отображения заголовка формы авторизации.
-    element = WebDriverWait(pytest.driver, 10).until(
-        EC.visibility_of_element_located((By.XPATH, '//h1[@class="card-container__title"]')))
+def reg_page_open(selenium):
+    """Фикстура заходит в браузер, открывает страницу авторизации, переходит на страницу регистрации.
+    После выполнения теста выходит из браузера."""
+    page = AuthPage(selenium)
     # Переход на страницу регистрации.
-    pytest.driver.find_element(By.ID, 'kc-register').click()
-    # Явное ожидание видимого отображения заголовка формы регистрации.
-    element = WebDriverWait(pytest.driver, 10).until(
-        EC.visibility_of_element_located((By.XPATH, '//h1[@class="card-container__title"]')))
+    page.enter_reg_page()
     yield
-    pytest.driver.quit()
+    selenium.quit()
 
 
-def test_reg_with_empty_fields():
-    """Валидация отправки пустой формы регистрации."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(empty)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(empty)
-    pytest.driver.find_element(By.ID, 'address').send_keys(empty)
-    pytest.driver.find_element(By.ID, 'password').send_keys(empty)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(empty)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_empty_fields(selenium):
+    """reg_page-001. Валидация отправки пустой формы регистрации."""
+    page = RegPage(selenium)
+    page.enter_first_name(empty)
+    page.enter_last_name(empty)
+    page.enter_address(empty)
+    page.enter_password(empty)
+    page.enter_password_confirm(empty)
+    page.btn_click_error_msg()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[2]/span').text == msg_reg_last_name,\
-        'msg reg last name error'
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="register-form__address"]/div/span').text == msg_username,\
-        'msg username error'
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="new-password-container"]/div[1]/span').text == msg_pass,\
-        'msg pass error'
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="new-password-container"]/div[2]/span').text == \
-           msg_pass_confirm, 'msg pass confirm error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
+    assert page.msg_last_name.text == msg_reg_last_name, 'msg reg last name error'
+    assert page.msg_address.text == msg_address, 'msg address error'
+    assert page.msg_password.text == msg_password, 'msg password error'
+    assert page.msg_password_confirm.text == msg_password_confirm, 'msg password confirm error'
 
 
 # Поле "Имя"
-def test_reg_with_empty_first_name():
-    """Валидация поля "Имя" с пустым значением."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(empty)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_empty_first_name(selenium):
+    """reg_page_first_name-001. Валидация поля "Имя" с пустым значением."""
+    page = RegPage(selenium)
+    page.enter_first_name(empty)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_cyrillic_1_first_name():
-    """Валидация поля "Имя" с 1 символом (кириллица)."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(cyrillic_1)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_one_cyrillic_first_name(selenium):
+    """reg_page_first_name-002. Валидация поля "Имя" с одним символом (кириллица)."""
+    page = RegPage(selenium)
+    page.enter_first_name(cyrillic_1)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_cyrillic_31_first_name():
-    """Валидация поля "Имя" с 31 символом (кириллица и '-')."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(cyrillic_31)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_thirty_one_cyrillic_first_name(selenium):
+    """reg_page_first_name-007. Валидация поля "Имя" с 31 символом (кириллица и '-')."""
+    page = RegPage(selenium)
+    page.enter_first_name(cyrillic_31)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_space_first_name():
-    """Валидация поля "Имя" с пробелом."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(space)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_space_first_name(selenium):
+    """reg_page_first_name-008. Валидация поля "Имя" с пробелом."""
+    page = RegPage(selenium)
+    page.enter_first_name(space)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_spaces_group_first_name():
-    """Валидация поля "Имя" с группой пробелов."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(spaces_group)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_spaces_group_first_name(selenium):
+    """reg_page_first_name-009. Валидация поля "Имя" с группой пробелов."""
+    page = RegPage(selenium)
+    page.enter_first_name(spaces_group)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_spaces_in_cyrillic_first_name():
-    """Валидация поля "Имя" с пробелами в значении (кириллица)."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(spaces_in_cyrillic)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_spaces_in_cyrillic_first_name(selenium):
+    """reg_page_first_name-010. Валидация поля "Имя" с пробелами в значении (кириллица)."""
+    page = RegPage(selenium)
+    page.enter_first_name(spaces_in_cyrillic)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_latin_first_name():
-    """Валидация поля "Имя" с латиницей."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(latin)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_latin_first_name(selenium):
+    """reg_page_first_name-011. Валидация поля "Имя" с латиницей."""
+    page = RegPage(selenium)
+    page.enter_first_name(latin)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_numbers_first_name():
-    """Валидация поля "Имя" с числами."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(numbers)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_digits_first_name(selenium):
+    """reg_page_first_name-012. Валидация поля "Имя" с цифрами."""
+    page = RegPage(selenium)
+    page.enter_first_name(digits)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
-def test_reg_with_symbols_first_name():
-    """Валидация поля "Имя" со спецсимволами."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(symbols)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_symbols_first_name(selenium):
+    """reg_page_first_name-013. Валидация поля "Имя" со спецсимволами."""
+    page = RegPage(selenium)
+    page.enter_first_name(symbols)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password)
+    page.btn_click_error_msg_first_name()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="name-container"]/div[1]/span').text == msg_reg_first_name,\
-        'msg reg first name error'
+    assert page.msg_first_name.text == msg_reg_first_name, 'msg reg first name error'
 
 
 # Поле "Подтверждение пароля"
-def test_reg_with_unvalid_password_confirm():
-    """Валидация поля "Подтверждение пароля" с password_confirm, отличным от password."""
-    pytest.driver.find_element(By.XPATH, '//input[@name="firstName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.XPATH, '//input[@name="lastName"]').send_keys(cyrillic_2)
-    pytest.driver.find_element(By.ID, 'address').send_keys(email)
-    pytest.driver.find_element(By.ID, 'password').send_keys(password)
-    pytest.driver.find_element(By.ID, 'password-confirm').send_keys(password_2)
-    pytest.driver.find_element(By.XPATH, '//button[@name="register"]').click()
+def test_reg_invalid_password_confirm(selenium):
+    """reg_page_password_confirm-001. Валидация поля "Подтверждение пароля" с password_confirm, отличным от password."""
+    page = RegPage(selenium)
+    page.enter_first_name(cyrillic_2)
+    page.enter_last_name(cyrillic_2)
+    page.enter_address(email)
+    page.enter_password(password)
+    page.enter_password_confirm(password_2)
+    page.btn_click_error_msg_password_confirm()
 
     # Проверка, что регистрация не осуществилась.
-    assert pytest.driver.find_element(By.XPATH, '//h1[@class="card-container__title"]').text == "Регистрация",\
-        'reg error'
+    assert page.header.text == 'Регистрация', 'reg error'
     # Проверка сообщений.
-    assert pytest.driver.find_element(By.XPATH, '//*[@class="rt-input-container__meta rt-input-container__meta--error"]'
-                                                '').text == msg_pass_mismatch, 'msg pass mismatch error'
+    assert page.msg_password_confirm.text == msg_pass_mismatch, 'msg reg password confirm error'

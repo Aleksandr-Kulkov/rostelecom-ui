@@ -4,7 +4,7 @@ auth_page_url = 'https://b2c.passport.rt.ru/auth/realms/b2c/protocol/openid-conn
                 'login&response_type=code&scope=openid&state=6c6800ba-2e66-450a-a019-17c3879780bd&theme&auth_type'
 
 # Path
-driver_path = '<path_to_driver>/graduatework/chromedriver-win64/chromedriver.exe'
+driver_path = 'C:/Users/akulkov/PycharmProjects/rostelecom-website/chromedriver-win64/chromedriver.exe'
 
 # Test Data
 empty = ''
@@ -21,13 +21,13 @@ password_2 = 'Test12345'
 space = ' '
 spaces_group = '    '
 spaces_in_cyrillic = ' ЗЁтЮы ЯеБЗЭ  ОЪйХФ   ршЛмцрФХР  '
-numbers = '123'
+digits = '123'
 symbols = '~!@#$%^&*()_+{}[]/|\<>,."№;:?='
 
 # Messages
 msg_reg_first_name = 'Необходимо заполнить поле кириллицей. От 2 до 30 символов.'
 msg_reg_last_name = 'Необходимо заполнить поле кириллицей. От 2 до 30 символов.'
-msg_username = 'Введите телефон в формате +7ХХХХХХХХХХ или +375XXXXXXXXX, или email в формате example@email.ru'
-msg_pass = 'Длина пароля должна быть не менее 8 символов'
-msg_pass_confirm = 'Длина пароля должна быть не менее 8 символов'
+msg_address = 'Введите телефон в формате +7ХХХХХХХХХХ или +375XXXXXXXXX, или email в формате example@email.ru'
+msg_password = 'Длина пароля должна быть не менее 8 символов'
+msg_password_confirm = 'Длина пароля должна быть не менее 8 символов'
 msg_pass_mismatch = 'Пароли не совпадают'

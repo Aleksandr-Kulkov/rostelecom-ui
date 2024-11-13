@@ -1,12 +1,14 @@
-from graduatework.pages.auth_page import AuthPage
-from graduatework.settings import empty, email, phone, login, ls
+# python -m pytest -v --driver Chrome --driver-path C:/Users/akulkov/PycharmProjects/rostelecom-website/chromedriver-win64/chromedriver.exe tests/test_auth_page.py
+import pytest
+from pages.auth_page import AuthPage
+from settings import empty, email, phone, login, ls
 
 
-def test_auth_with_empty_fields(selenium):
-    """Валидация отправки пустой формы авторизации."""
+def test_auth_empty_fields(selenium):
+    """auth_page_phone-001. Валидация отправки пустой формы авторизации."""
     page = AuthPage(selenium)
     page.enter_username(empty)
-    page.enter_pass(empty)
+    page.enter_password(empty)
     page.btn_click()
 
     # Проверка, что авторизация не осуществилась.
@@ -14,7 +16,7 @@ def test_auth_with_empty_fields(selenium):
 
 
 def test_change_tab_from_phone_to_email(selenium):
-    """Валидация переключения таба с phone на email при вводе в поле телефона значения эл. почты."""
+    """auth_page_phone-002. Валидация переключения таба с phone на email при вводе в поле телефона значения эл. почты."""
     page = AuthPage(selenium)
     page.tab_phone_click()
     page.enter_username(email)
@@ -25,7 +27,7 @@ def test_change_tab_from_phone_to_email(selenium):
 
 
 def test_change_tab_from_email_to_phone(selenium):
-    """Валидация переключения таба с email на phone при вводе в поле эл. почты значения телефона."""
+    """auth_page_email-001. Валидация переключения таба с email на phone при вводе в поле эл. почты значения телефона."""
     page = AuthPage(selenium)
     page.tab_email_click()
     page.enter_username(phone)
@@ -36,7 +38,7 @@ def test_change_tab_from_email_to_phone(selenium):
 
 
 def test_change_tab_from_email_to_login(selenium):
-    """Валидация переключения таба с email на login при вводе в поле эл. почты значения логина."""
+    """auth_page_email-002. Валидация переключения таба с email на login при вводе в поле эл. почты значения логина."""
     page = AuthPage(selenium)
     page.tab_email_click()
     page.enter_username(login)
@@ -47,7 +49,7 @@ def test_change_tab_from_email_to_login(selenium):
 
 
 def test_change_tab_from_email_to_ls(selenium):
-    """Валидация переключения таба с email на ls при вводе в поле эл. почты значения лицевого счета."""
+    """auth_page_email-003. Валидация переключения таба с email на ls при вводе в поле эл. почты значения лицевого счета."""
     page = AuthPage(selenium)
     page.tab_email_click()
     page.enter_username(ls)
@@ -58,8 +60,7 @@ def test_change_tab_from_email_to_ls(selenium):
 
 
 def test_change_tab_from_login_to_phone(selenium):
-    """Валидация переключения таба с login на phone при вводе в поле логина значения телефона.
-    Failed, таб не переключается."""
+    """auth_page_login-001. Валидация переключения таба с login на phone при вводе в поле логина значения телефона."""
     page = AuthPage(selenium)
     page.tab_login_click()
     page.enter_username(phone)
@@ -70,7 +71,7 @@ def test_change_tab_from_login_to_phone(selenium):
 
 
 def test_change_tab_from_login_to_email(selenium):
-    """Валидация переключения таба с login на email при вводе в поле логина значения эл. почты."""
+    """auth_page_login-002. Валидация переключения таба с login на email при вводе в поле логина значения эл. почты."""
     page = AuthPage(selenium)
     page.tab_login_click()
     page.enter_username(email)
@@ -80,8 +81,9 @@ def test_change_tab_from_login_to_email(selenium):
     assert page.tab.get_attribute('value') == 'EMAIL', 'tab login error'
 
 
+@pytest.mark.xfail(reason='BR-001')
 def test_change_tab_from_login_to_ls(selenium):
-    """Валидация переключения таба с login на ls при вводе в поле логина значения лицевого счета."""
+    """auth_page_login-003. Валидация переключения таба с login на ls при вводе в поле логина значения лицевого счета."""
     page = AuthPage(selenium)
     page.tab_login_click()
     page.enter_username(ls)
